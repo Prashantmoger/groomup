@@ -1,0 +1,33 @@
+:root{--bg:#14191c;--card:#1f272b;--card2:#263136;--line:#33424a;--tx:#e8eef0;--mut:#9fb0b7;--teal:#2bb3a3;--teal2:#1d8c80;--warn:#e0a84a}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.5 system-ui,-apple-system,Roboto,"Segoe UI",sans-serif;-webkit-tap-highlight-color:transparent}
+.top{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:8px;padding:10px 14px;padding-top:max(10px,env(safe-area-inset-top));background:#1c2226;border-bottom:1px solid var(--line)}
+.top h1{flex:1;margin:0;font-size:20px;letter-spacing:.5px}.top h1 b{color:var(--teal)}
+.tabs{display:flex;gap:6px}.tabs button,.iconbtn{min-width:44px;height:44px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--tx);font-size:20px}
+.tabs button.on{border-color:var(--teal);color:var(--teal)}
+main{padding:16px 14px 90px;max-width:640px;margin:0 auto}
+h2{font-size:22px;margin:4px 0 4px}h3{margin:18px 0 8px;font-size:17px}.sub{color:var(--mut);margin:0 0 14px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.occ{min-height:112px;text-align:left;padding:14px;border-radius:16px;border:1px solid var(--line);background:linear-gradient(160deg,var(--card2),var(--card));color:var(--tx);font-size:16px;font-weight:600}
+.occ .e{display:block;font-size:30px;margin-bottom:6px}.occ small{display:block;color:var(--mut);font-weight:400;font-size:13px}
+.occ:active,.chip:active,.btn:active{transform:scale(.98)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}.chip{min-height:48px;padding:10px 16px;border-radius:24px;border:1px solid var(--line);background:var(--card);color:var(--tx);font-size:15px}
+.chip[aria-pressed=true]{background:var(--teal2);border-color:var(--teal);color:#fff;font-weight:600}
+.btn{display:block;width:100%;min-height:54px;margin-top:20px;border:0;border-radius:14px;background:var(--teal);color:#06201d;font-size:17px;font-weight:700}
+.btn.sec{background:var(--card2);color:var(--tx);border:1px solid var(--line)}.btn:disabled{opacity:.4}
+.row{display:flex;gap:10px}.row .btn{margin-top:12px}
+.sum{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0 14px}.pill{background:var(--card2);border:1px solid var(--line);border-radius:20px;padding:4px 12px;font-size:14px;color:var(--mut)}.pill b{color:var(--tx)}
+.bar{height:10px;border-radius:6px;background:var(--card2);overflow:hidden;margin:6px 0 4px}.bar i{display:block;height:100%;background:var(--teal);transition:width .3s}
+.step{background:var(--card);border:1px solid var(--line);border-radius:16px;margin:12px 0;overflow:hidden}
+.step.done{border-color:var(--teal2);opacity:.75}
+.sh{display:flex;align-items:center;gap:12px;padding:12px 14px}
+.tick{flex:none;width:44px;height:44px;border-radius:50%;border:2px solid var(--teal);background:transparent;color:#fff;font-size:22px}
+.step.done .tick{background:var(--teal)}
+.sh .t{flex:1}.sh .t b{display:block;font-size:16px}.sh .t span{color:var(--mut);font-size:13px}
+.sb{padding:0 14px 14px 70px;font-size:15px}.sb p{margin:6px 0}.sb .k{color:var(--teal);font-weight:600}
+.note{background:#2b2618;border:1px solid #5a4a22;color:#f0dcae;border-radius:12px;padding:10px 12px;font-size:14px;margin:10px 0}
+.tips{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:6px 16px}.tips li{margin:8px 0}
+.saved{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin:10px 0}
+.saved .t{flex:1;min-height:44px;background:none;border:0;color:var(--tx);text-align:left;font-size:16px}.saved small{display:block;color:var(--mut)}
+.basic{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin:10px 0}.basic h3{margin:0 0 6px}
+.foot{color:var(--mut);font-size:13px;margin-top:24px;text-align:center}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--teal);color:#06201d;font-weight:700;padding:10px 18px;border-radius:24px;opacity:0;transition:opacity .3s;pointer-events:none}#toast.on{opacity:1}
