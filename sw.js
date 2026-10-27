@@ -1,5 +1,5 @@
-const C='groomup-v2',MP='groomup-mp-1';
-const F=['./','index.html','app.css','app.js','pics.js','scan.js','manifest.webmanifest','icons/icon.svg','icons/icon-192.png','icons/icon-512.png'];
+const C='groomup-v3',MP='groomup-mp-1';
+const F=['./','index.html','app.css','app.js','pics.js','scan.js','videos.js','manifest.webmanifest','icons/icon.svg','icons/icon-192.png','icons/icon-512.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(F)));self.skipWaiting()});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==C&&x!==MP).map(x=>caches.delete(x)))));self.clients.claim()});
 self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;

@@ -120,6 +120,7 @@ function render(){
   if(h[0]==='look'&&OCC[h[1]]) return viewLook(v,h[1]);
   if(h[0]==='scan') return viewScan(v,h[1]==='other'?'other':'self');
   if(h[0]==='result') return viewResult(v);
+  if(h[0]==='tutorials') return viewTutorials(v);
   if(h[0]==='saved') return viewSaved(v);
   if(h[0]==='basics') return viewBasics(v);
   viewHome(v);
@@ -131,6 +132,7 @@ function viewHome(v){
   ${S.scan&&!state.guest?`<p class="sub small">Last scan: ${SHAPE[S.scan.shape]} face · ${TONE_L[S.scan.tone]} · ${UNDER[S.scan.under]} undertone</p>`:''}
   <div class="grid">${Object.entries(OCC).map(([k,o])=>`<button class="occ" data-o="${k}"><span class="e">${o.e}</span>${o.n}<small>${o.d}</small></button>`).join('')}</div>
   <button class="btn sec" data-go="basics">New to this? Read Beginner basics</button>
+  <button class="btn sec" data-go="tutorials">▶ Watch video tutorials</button>
   <p class="foot">GroomUp is a temporary name · Works offline</p>`;
   v.querySelectorAll('.occ').forEach(b=>b.onclick=()=>go('profile/'+b.dataset.o));
   if($('#endGuest'))$('#endGuest').onclick=()=>{state.guest=null;viewHome(v)};
@@ -160,7 +162,8 @@ function viewLook(v,o){
   ${p.skin==='sensitive'?'<div class="note">Sensitive skin: patch test each new product 24–48 h before the day. Stop if you get itching, burning or redness.</div>':''}
   ${steps.map((s,i)=>`<div class="step ${ch[s.id]?'done':''}" data-id="${s.id}">
     <div class="sh"><button class="tick" aria-label="Mark step done">${ch[s.id]?'✓':''}</button><div class="t"><b>${i+1}. ${esc(s.title)}</b><span>${s.min} min · ${esc(s.product)}</span></div></div>
-    <div class="sb">${stepPic(s.id,p.beard)}${focus.includes(s.id)?'<span class="focus">⭐ Focus for '+(state.guest?'them':'you')+' (from scan)</span>':''}<p><span class="k">What:</span> ${esc(s.what)}</p><p><span class="k">Why:</span> ${esc(s.why)}</p><p><span class="k">How:</span> ${esc(s.how)}</p></div></div>`).join('')}
+    <div class="sb">${stepPic(s.id,p.beard)}${focus.includes(s.id)?'<span class="focus">⭐ Focus for '+(state.guest?'them':'you')+' (from scan)</span>':''}<p><span class="k">What:</span> ${esc(s.what)}</p><p><span class="k">Why:</span> ${esc(s.why)}</p><p><span class="k">How:</span> ${esc(s.how)}</p>${vidButtons(STEP_VIDS[s.id==='beard'&&p.beard==='clean'?'shave':s.id],true)}</div></div>`).join('')}
+  <h3>▶ Video guides for this look</h3>${vidButtons(OCC_VIDS[o],false)}<p class="vnote">${VNOTE}</p>
   <h3>Tips to look natural</h3><ul class="tips">${O.tips.concat(['Blend edges until you can\'t see where product starts or stops.','Remove everything at night with a cleanser (oil-based cleanser first if you wore foundation), then moisturise.']).map(t=>`<li>${esc(t)}</li>`).join('')}</ul>
   <div class="row"><button class="btn sec" id="reset">Reset ticks</button><button class="btn" id="fav">${isSaved?'★ Saved':'☆ Save look'}</button></div>
   <button class="btn sec" id="edit">Change profile</button>`;
@@ -194,7 +197,7 @@ const BASICS=[
 ];
 function viewBasics(v){
   v.innerHTML=`<h2>? Beginner basics</h2><p class="sub">Everything you need to know in 2 minutes.</p>`+BASICS.map(([t,d])=>`<div class="basic"><h3>${t}</h3>${esc(d)}</div>`).join('')+
-  `<p class="foot">General grooming guidance, not medical advice.</p>`;
+  `<h3>▶ Start with these videos</h3>${vidList(BASICS_VIDS)}<button class="btn sec" data-go="tutorials">See all tutorials</button><p class="vnote">${VNOTE}</p><p class="foot">General grooming guidance, not medical advice.</p>`;
 }
 document.addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b)go(b.dataset.go)});
 $('#back').onclick=()=>history.length>1?history.back():go('home');

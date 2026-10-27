@@ -50,3 +50,9 @@ h2{font-size:22px;margin:4px 0 4px}h3{margin:18px 0 8px;font-size:17px}.sub{colo
 .res h3{margin:12px 0 6px;font-size:15px;color:var(--mut)}
 .sug{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 14px;margin:10px 0}.sug p{margin:4px 0 0;font-size:15px}
 [hidden]{display:none!important}
+.vids{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.vbtn{flex:1 1 140px;display:block;text-decoration:none;background:#173f3a;border:1px solid var(--teal2);color:#c9f1ec;border-radius:12px;padding:8px 12px;font-weight:700;font-size:14px;min-height:44px}
+.vbtn small{display:block;font-weight:400;color:var(--mut);font-size:12px}.vbtn.s{background:var(--card2);border-color:var(--line);color:var(--tx)}
+.vitem{display:block;text-decoration:none;color:var(--tx);background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:8px 0}.vitem b{display:block;font-size:14px;color:#c9f1ec}.vitem small{color:var(--mut);font-size:12px}.vitem.s b{color:var(--tx)}
+.tut h4{margin:14px 0 2px;font-size:15px}.vnote{color:var(--mut);font-size:12px}
+.tabs{gap:4px}.tabs button{min-width:40px}
