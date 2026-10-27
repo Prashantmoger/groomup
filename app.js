@@ -118,21 +118,28 @@ function render(){
   window.scrollTo(0,0);
   if(h[0]==='profile'&&OCC[h[1]]) return viewProfile(v,h[1]);
   if(h[0]==='look'&&OCC[h[1]]) return viewLook(v,h[1]);
+  if(h[0]==='scan') return viewScan(v,h[1]==='other'?'other':'self');
+  if(h[0]==='result') return viewResult(v);
   if(h[0]==='saved') return viewSaved(v);
   if(h[0]==='basics') return viewBasics(v);
   viewHome(v);
 }
 function viewHome(v){
   v.innerHTML=`<h2>What's the occasion?</h2><p class="sub">Pick one and get a simple step-by-step look made for you.</p>
+  ${state.guest?`<div class="guest">👥 Making looks for <b>a friend</b> (from their scan) <button class="chip" id="endGuest">Back to me</button></div>`:''}
+  <div class="scanrow"><button class="btn scanbtn" data-go="scan/self">📷 Scan my face</button><button class="btn sec scanbtn" data-go="scan/other">👥 Scan someone else</button></div>
+  ${S.scan&&!state.guest?`<p class="sub small">Last scan: ${SHAPE[S.scan.shape]} face · ${TONE_L[S.scan.tone]} · ${UNDER[S.scan.under]} undertone</p>`:''}
   <div class="grid">${Object.entries(OCC).map(([k,o])=>`<button class="occ" data-o="${k}"><span class="e">${o.e}</span>${o.n}<small>${o.d}</small></button>`).join('')}</div>
   <button class="btn sec" data-go="basics">New to this? Read Beginner basics</button>
   <p class="foot">GroomUp is a temporary name · Works offline</p>`;
   v.querySelectorAll('.occ').forEach(b=>b.onclick=()=>go('profile/'+b.dataset.o));
+  if($('#endGuest'))$('#endGuest').onclick=()=>{state.guest=null;viewHome(v)};
 }
 function chips(name,obj,cur){return `<div class="chips" data-n="${name}">${Object.entries(obj).map(([k,l])=>`<button class="chip" data-v="${k}" aria-pressed="${cur===k}">${l}</button>`).join('')}</div>`}
 function viewProfile(v,o){
-  const p=Object.assign({},S.profile);
-  v.innerHTML=`<h2>${OCC[o].e} ${OCC[o].n}</h2><p class="sub">Quick profile – we'll remember it for next time.</p>
+  const p=Object.assign({},state.guest?state.guest.profile:S.profile);
+  v.innerHTML=`<h2>${OCC[o].e} ${OCC[o].n}</h2><p class="sub">${state.guest?'Your friend\'s profile (from their scan).':'Quick profile – we\'ll remember it for next time.'}</p>
+  <button class="btn sec slim" data-go="scan/${state.guest?'other':'self'}">📷 Fill this in with a face scan</button>
   <h3>Skin type</h3>${chips('skin',SKIN,p.skin)}
   <h3>Skin tone</h3>${chips('tone',TONE,p.tone)}
   <h3>Beard</h3>${chips('beard',BEARD,p.beard)}
@@ -141,19 +148,19 @@ function viewProfile(v,o){
   const upd=()=>{$('#mk').disabled=!(p.skin&&p.tone&&p.beard);$('#sensnote').hidden=p.skin!=='sensitive'};
   v.querySelectorAll('.chips').forEach(c=>c.onclick=e=>{const b=e.target.closest('.chip');if(!b)return;p[c.dataset.n]=b.dataset.v;c.querySelectorAll('.chip').forEach(x=>x.setAttribute('aria-pressed',x===b));upd()});
   upd();
-  $('#mk').onclick=()=>{S.profile=p;save();go('look/'+o)};
+  $('#mk').onclick=()=>{if(state.guest)state.guest.profile=p;else{S.profile=p;save()}go('look/'+o)};
 }
 function viewLook(v,o){
-  const p=S.profile;if(!(p.skin&&p.tone&&p.beard))return go('profile/'+o);
+  const p=state.guest?state.guest.profile:S.profile,scan=state.guest?state.guest.scan:S.scan,focus=(scan&&scan.focus)||[];if(!(p.skin&&p.tone&&p.beard))return go('profile/'+o);
   const steps=buildLook(o,p),id=lookId(o,p),ch=S.checks[id]||(S.checks[id]={}),O=OCC[o];
   const total=steps.reduce((a,s)=>a+s.min,0),isSaved=S.saved.some(x=>x.id===id);
-  v.innerHTML=`<h2>${O.e} ${O.n} look</h2>
+  v.innerHTML=`<h2>${O.e} ${O.n} look</h2>${state.guest?'<p class="sub">👥 For your friend</p>':''}
   <div class="sum"><span class="pill"><b>${SKIN[p.skin]}</b> skin</span><span class="pill"><b>${TONE[p.tone]}</b></span><span class="pill"><b>${BEARD[p.beard]}</b></span><span class="pill">⏱ <b>~${total} min</b></span></div>
   <div id="prog"></div><div class="bar"><i id="pbar"></i></div>
   ${p.skin==='sensitive'?'<div class="note">Sensitive skin: patch test each new product 24–48 h before the day. Stop if you get itching, burning or redness.</div>':''}
   ${steps.map((s,i)=>`<div class="step ${ch[s.id]?'done':''}" data-id="${s.id}">
     <div class="sh"><button class="tick" aria-label="Mark step done">${ch[s.id]?'✓':''}</button><div class="t"><b>${i+1}. ${esc(s.title)}</b><span>${s.min} min · ${esc(s.product)}</span></div></div>
-    <div class="sb"><p><span class="k">What:</span> ${esc(s.what)}</p><p><span class="k">Why:</span> ${esc(s.why)}</p><p><span class="k">How:</span> ${esc(s.how)}</p></div></div>`).join('')}
+    <div class="sb">${stepPic(s.id,p.beard)}${focus.includes(s.id)?'<span class="focus">⭐ Focus for '+(state.guest?'them':'you')+' (from scan)</span>':''}<p><span class="k">What:</span> ${esc(s.what)}</p><p><span class="k">Why:</span> ${esc(s.why)}</p><p><span class="k">How:</span> ${esc(s.how)}</p></div></div>`).join('')}
   <h3>Tips to look natural</h3><ul class="tips">${O.tips.concat(['Blend edges until you can\'t see where product starts or stops.','Remove everything at night with a cleanser (oil-based cleanser first if you wore foundation), then moisturise.']).map(t=>`<li>${esc(t)}</li>`).join('')}</ul>
   <div class="row"><button class="btn sec" id="reset">Reset ticks</button><button class="btn" id="fav">${isSaved?'★ Saved':'☆ Save look'}</button></div>
   <button class="btn sec" id="edit">Change profile</button>`;
